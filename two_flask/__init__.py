@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 app = Flask(__name__,template_folder='templates')
+
 WIN = sys.platform.startswith('win')
 if WIN:
     prefix = 'sqlite:///'  # 如果是windows系统，三个斜杠
@@ -20,6 +21,9 @@ db = SQLAlchemy(app)
 
 # Flask-login 初始化操作
 login_manager = LoginManager(app)   # 实例化扩展类
+
+
+
 
 @login_manager.user_loader
 def load_user(user_id):   # 创建用户加载回调函数，接受用户ID作为参数

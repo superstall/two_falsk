@@ -1,7 +1,7 @@
 import unittest
 
 from two_flask import app,db
-from two_flask.models import User,Movie
+from two_flask.models import User,Movie,Ariticles
 
 class WatchlistTestCase(unittest.TestCase):
     def setUp(self):
@@ -13,9 +13,9 @@ class WatchlistTestCase(unittest.TestCase):
         # 创建数据库和表
         db.create_all()
         # 创建测试数据，一个用户，一个电影信息
-        user = User(name='Test',username='test')
+        user = User(name='孟子',username='root')
         user.set_password('123456')
-        movie = Movie(title='测试电影名称',year='2020')
+        movie = Ariticles(title='测试名称',content='测试内容',author='测试人名')
         db.session.add_all([user,movie])
         db.session.commit()
 
@@ -48,14 +48,14 @@ class WatchlistTestCase(unittest.TestCase):
     def test_index_page(self):
         response = self.client.get('/')
         data = response.get_data(as_text=True)
-        self.assertIn('Test\'s 博客',data)
-        self.assertIn('测试电影名称',data)
+        self.assertIn("孟子's 博客",data)
+        self.assertIn('测试名称',data)
         self.assertEqual(response.status_code,200)
     
     # 登录(辅助删除，编辑，添加这些功能函数)
     def test_login(self):
         self.client.post('/login',data=dict(
-            username = 'test',
+            username = 'root',
             password = '123456'
         ),follow_redirects=True)
     

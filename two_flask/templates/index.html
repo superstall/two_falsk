@@ -1,27 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p>{{ movies|length }} Titles</p>
+<p>共发现{{ movies|length }}篇文章！ </p>
 {# 表单 #}
+<div style="background: #758055">
 {% if current_user.is_authenticated %}
 <form method="POST">
-    电影名 <input type="text" name="title" autocomplete="off" required>
-    年份 <input type="text" name="year" autocomplete="off" required>
+
+
+    标题 <input type="text" name="title" autocomplete="off" required>
+     <input type="text" id="tinydemo" value="" name="content" autocomplete="off" required style="display: none">
+    <textarea id="iconsdemo2">这里开始写你的旅程吧！</textarea>
+            <script>
+              tinymce.init({selector: '#iconsdemo2',language:'zh_CN',plugins: 'code', });
+              //给input赋值
+                var box = document.getElementById('iconsdemo2').value;
+
+                document.getElementById("tinydemo").value=box;
+
+            </script>
+    作者<input type="text" name="name" autocomplete="off" required>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="submit" class="btn" name="submit" value="添加">
 </form>
 {% endif %}
+</div>
+
+<div style="background: rgba(255,251,149,0.53)">
 <ul class="movie-list">
     {% for movie in movies %}
     <li>
-        {{ movie.title }} - {{ movie.year }}
-        <span class="float-right">
+        {{ movie.title }} - - {{ movie.pubdate}}
+         <span class="float-right">
             <a class="vbd"
-                href="http://v.baidu.com/v?word={{ movie.title }}&ct=301989888&rn=67&pn=0&db=0&s=0&fbl=800&ie=utf-8&oq=nnkd&f=3&rsp=0"
-                target="_blank" title="在百度视频中查找此电影">百度视频</a>
+                href="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=request_25_pg&wd={{ movie.title }}的相关文章&oq=%25E7%2599%25BE%25E5%25BA%25A6%25E7%25BE%258E%25E6%2596%2587&rsv_pq=e5d26427000513f0&rsv_t=4fe75nZ5DF42mKr3NBQ6GliwdI%2BVAWAvaMP1g9BbfpBT38KbuS6TtqxuvI%2BILV9sML%2BqoQ&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=5618&rsv_sug3=86&rsv_sug1=48&rsv_sug7=101&bs=%E7%99%BE%E5%BA%A6%E7%BE%8E%E6%96%87"
+                target="_blank" title="在百度视频中查找此博文">百度博文</a>
         </span>
         {% if current_user.is_authenticated %}
         <span class="float-right">
             <a class="btn" href="{{ url_for('edit',movie_id=movie.id) }}">编辑</a>
+        <a class="btn" href="{{ url_for('this_one',movie_id=movie.id) }}">查看详情</a>
         </span>
         <span class="float-right">
             <form class="inline-form" action="{{ url_for('delete',movie_id=movie.id) }}" method="post">
@@ -35,3 +53,6 @@
 
 <img class="hulu" src="{{ url_for('static',filename='images/5.jpg') }}" alt="">
 {% endblock %}
+</div>
+
+

@@ -1,6 +1,8 @@
 from two_flask import db
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
+import datetime
+from flask_migrate import *
 
 # 创建数据库模型类
 class User(db.Model,UserMixin):
@@ -18,3 +20,10 @@ class Movie(db.Model):
     id = db.Column(db.Integer,primary_key=True) # 主键
     title = db.Column(db.String(60))
     year = db.Column(db.String(4))
+
+class Ariticles(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # 主键
+    title = db.Column(db.String(20))
+    content = db.Column(db.String(300))
+    author = db.Column(db.String(20)) #作者
+    pubdate = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)

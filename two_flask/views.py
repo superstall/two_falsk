@@ -1,7 +1,11 @@
 from two_flask import app,db
 from flask import request,redirect,url_for,flash,render_template
 from flask_login import login_user,logout_user,login_required,current_user
-from two_flask.models import User,Movie
+from two_flask.models import User,Movie,Ariticles
+
+import datetime
+
+
 # 首页
 @app.route('/',methods=['GET','POST'])
 def index():
@@ -11,39 +15,50 @@ def index():
             return redirect(url_for('index'))
         # 获取表单的数据
         title = request.form.get('title')
-        year = request.form.get('year')
+        content = request.form.get('content')
+        name = request.form.get('name')
 
         # 验证title，year不为空，并且title长度不大于60，year的长度不大于4
-        if not title or not year or len(year)>4 or len(title)>60:
+        if not title or not content or not name :
             flash('输入错误')  # 错误提示
             return redirect(url_for('index'))  # 重定向回主页
         
-        movie = Movie(title=title,year=year)  # 创建记录
+        movie = Ariticles(title=title,content=content,author=name)  # 创建记录
         db.session.add(movie)  # 添加到数据库会话
         db.session.commit()   # 提交数据库会话
         flash('数据创建成功')
         return redirect(url_for('index'))
 
-    movies = Movie.query.all()
+    movies = Ariticles.query.all()
+
     return render_template('index.html',movies=movies)
+
+#查看详情
+@app.route('/thisone/<int:movie_id>',methods=['GET'])
+@login_required
+def this_one(movie_id):
+    movie = Ariticles.query.get_or_404(movie_id)
+    return render_template('this_one.html', movie=movie)
 # 编辑电影信息页面
 @app.route('/movie/edit/<int:movie_id>',methods=['GET','POST'])
 @login_required
 def edit(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
+    movie = Ariticles.query.get_or_404(movie_id)
 
     if request.method == 'POST':
-        title = request.form['title']
-        year = request.form['year']
+        title = request.form.get('title')
+        content = request.form.get('content')
 
-        if not title or not year or len(year)>4 or len(title)>60:
+
+        if not title or not content:
             flash('输入错误')
             return redirect(url_for('edit'),movie_id=movie_id)
         
         movie.title = title
-        movie.year = year
+        movie.content = content
+
         db.session.commit()
-        flash('电影信息已经更新')
+        flash('信息已经更新')
         return redirect(url_for('index'))
     return render_template('edit.html',movie=movie)
 
@@ -68,7 +83,7 @@ def settings():
 @app.route('/movie/delete/<int:movie_id>',methods=['POST'])
 @login_required    
 def delete(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
+    movie = Ariticles.query.get_or_404(movie_id)
     db.session.delete(movie)
     db.session.commit()
     flash('删除数据成功')

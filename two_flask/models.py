@@ -2,7 +2,7 @@ from two_flask import db
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 import datetime
-from flask_migrate import *
+
 
 # 创建数据库模型类
 class User(db.Model,UserMixin):
